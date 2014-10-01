@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection データベースに接続するためにアプリケーションによって web.config で使用される接続文字列。" defaultValue="Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-ProjectCoil-20141001120249.mdf;Initial Catalog=aspnet-ProjectCoil-20141001120249;Integrated Security=True" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\kei\\Documents\\Visual\ Studio\ 2013\\Projects\\ProjectCoil\\ProjectCoil\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
-  </parameter>
-</parameters>

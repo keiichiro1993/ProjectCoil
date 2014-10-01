@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectCoilKai", "ProjectCoilKai\ProjectCoilKai.csproj", "{02FF6FD4-101B-4442-9E37-8C8D8A7A4DAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{3A324ECB-9EA2-4216-A02D-8D193FA24D55}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\AzureWebsitePublishModule.psm1 = PublishScripts\AzureWebsitePublishModule.psm1
+		PublishScripts\Publish-WebApplicationWebsite.ps1 = PublishScripts\Publish-WebApplicationWebsite.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{23F32A9C-DEED-4D92-ACC5-897003EAED30}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Configurations\ProjectCoilKai-WAWS-dev.json = PublishScripts\Configurations\ProjectCoilKai-WAWS-dev.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02FF6FD4-101B-4442-9E37-8C8D8A7A4DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02FF6FD4-101B-4442-9E37-8C8D8A7A4DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02FF6FD4-101B-4442-9E37-8C8D8A7A4DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02FF6FD4-101B-4442-9E37-8C8D8A7A4DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{23F32A9C-DEED-4D92-ACC5-897003EAED30} = {3A324ECB-9EA2-4216-A02D-8D193FA24D55}
+	EndGlobalSection
+EndGlobal

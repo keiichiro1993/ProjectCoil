@@ -96,6 +96,10 @@
     <Content Include="Scripts\ARs\three.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\mplus-1m-light.ttf" />
+    <None Include="Properties\PublishProfiles\projectcoil %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\projectcoil %283%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ProjectCoil.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

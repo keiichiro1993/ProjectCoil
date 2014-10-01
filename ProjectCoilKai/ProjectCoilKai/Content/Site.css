@@ -1,6 +1,12 @@
-﻿body {
+﻿@font-face {
+    font-family: 'mplus';
+    src: url("~/fonts/mplus-1m-light.ttf");
+}
+
+body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-family: 'mplus';
 }
 
 /* Set padding to keep content from hitting the edges */

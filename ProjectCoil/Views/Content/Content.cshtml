@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="~/Scripts/ARs/cv.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/aruco.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/three.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/posit2.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/svd.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/OrbitControls.js"></script>
+
+    <style>
+        html > /**/ body #video {
+            display: none;
+        }
+
+        html > /**/ body #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage">
+        <canvas id="canvas" width="640" height="480"></canvas>
+        <video id="video"></video>
+    </div>
+    <script>
+        navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+        var width = 640;
+        var height = 480;
+        var posit = new POS.Posit(300, width - 50);
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var video = document.getElementById("video");
+
+        if (!navigator.getUserMedia) {
+            alert("Oops...お使いのブラウザはカメラの起動に対応していないようです。")
+        }
+        else {
+            navigator.getUserMedia(
+                { video: true },
+                function (localMediaStream) {
+                    video.src = window.URL.createObjectURL(localMediaStream);
+                    video.play();
+                },
+                function (error) {
+                    alert("カメラを起動できませんでした。Chromeで試してみてください。");
+                }
+                );
+            video.oncanplay = function () {
+                main();
+            }
+        }
+
+
+        var corners;
+        var pose;
+        var detector = new AR.Detector();
+        var imageData;
+        var markers;
+
+        function detectImages() {
+            context.drawImage(video, 0, 0);
+            imageData = context.getImageData(0, 0, 640, 480);
+            markers = detector.detect(imageData);
+            if (markers[0]) {
+                corners = markers[0].corners;
+                for (var i = 0; i < corners.length; ++i) {
+                    var corner = corners[i];
+                    corner.x = corner.x - (width / 2);
+                    corner.y = (height / 2) - corner.y;
+                }
+                pose = posit.pose(corners);
+                return pose;
+            }
+        }
+
+
+        var main = function () {
+
+            var scene = new THREE.Scene();
+            var geometry = new THREE.BoxGeometry(200, 200, 200);
+
+            var material = new THREE.MeshLambertMaterial({ color: 0xee0000 });
+            var cube = new THREE.Mesh(geometry, material);
+            cube.position.set(0, 0, 0);
+            cube.castShadow = true;
+            scene.add(cube);
+
+            var light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(0, 30, 0);
+            light.castShadow = true;
+            scene.add(light);
+            var ambient = new THREE.AmbientLight(0x550000);
+            scene.add(ambient);
+
+            var camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+            camera.position.set(0, 0, 0);
+
+            var axis = new THREE.AxisHelper(1000);
+            axis.position.set(0, 0, 0);
+            scene.add(axis);
+
+
+            //カメラからの映像関連
+            var videoTexture = new THREE.Texture(canvas);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            var movieMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, overdraw: true, side: THREE.FrontSide });
+            var movieGeometry = new THREE.PlaneGeometry(width, height, 1, 1);
+            var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+            movieScreen.position.set(0, 0, -5000);
+            var movieScene = new THREE.Scene();
+            movieScene.add(movieScreen);
+            var movieCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 10000);
+            movieCamera.position.z = 5000;
+
+
+
+
+
+            //オブジェクト
+            loader = new THREE.JSONLoader();
+            loader.load('../Assets/untitled.js', function (geometry, materials) { //第１引数はジオメトリー、第２引数はマテリアルが自動的に取得）
+                var faceMaterial = new THREE.MeshFaceMaterial(materials);
+                json = new THREE.Mesh(geometry, faceMaterial);
+                json.position.set(0, 0, 0);
+                json.scale.set(100, 100, 100);
+                scene.add(json);
+            });
+
+
+
+
+
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.autoClear = false;
+            renderer.setSize(width, height);
+            renderer.setClearColor(0xeeeeee, 1);
+            renderer.shadowMapEnabled = true;
+            document.getElementById('stage').appendChild(renderer.domElement);
+            var controls = new THREE.OrbitControls(camera, renderer.domElement);
+            var poseBox;
+            function render() {
+                requestAnimationFrame(render);
+                poseBox = detectImages();
+                if (poseBox) {
+                    var rotation = poseBox.bestRotation;
+                    cube.rotation.x = -Math.asin(-rotation[1][2]);
+                    cube.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+                    cube.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
+                    var translation = poseBox.bestTranslation;
+                    cube.position.x = translation[0];
+                    cube.position.y = translation[1];
+                    cube.position.z = -translation[2];
+
+                    json.rotation.x = -Math.asin(-rotation[1][2]);
+                    json.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+                    json.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
+                    json.position.x = translation[0];
+                    json.position.y = translation[1] - 500;
+                    json.position.z = -translation[2] + 100;
+                }
+                if (videoTexture) {
+                    videoTexture.needsUpdate = true;
+                }
+                renderer.clear();
+                renderer.render(movieScene, movieCamera);
+                renderer.render(scene, camera);
+            }
+
+            render();
+        }
+    </script>
+</body>
+</html>

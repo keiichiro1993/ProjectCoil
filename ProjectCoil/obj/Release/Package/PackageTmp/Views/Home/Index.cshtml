@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="alert alert-danger">
+    <h2>注意！！</h2>
+    <p>
+        ProjectCoil&copy;は大変重い（容量的にも動作的にも）アプリケーションです。モバイルからの閲覧の場合、通信速度制限の上限を越えてしまう可能性があります。<br />
+    </p>
+</div>
+
+<div>
+    <h2>はじめに</h2>
+    <p>
+        こんにちは！ProjectCoilのページヘようこそ。<br />
+        ProjectCoilは、マーカーを用いたARアプリケーションです。利用には何枚かのARマーカーが必要です。ダウンロードは
+        @Html.ActionLink("こちら", "MarkerGenerator", "Home")
+        から。<br />
+        みなさんの普段生活している空間を素敵なものに。しかもブラウザ上で。<br />
+        僕たちはそういうことにハピネスを感じるんだ。
+    </p>
+
+    @Html.ActionLink("はじめる", "Content", "Content", new { area = "" }, new { @class = "btn btn-default" })
+</div>

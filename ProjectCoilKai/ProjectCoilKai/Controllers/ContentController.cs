@@ -13,5 +13,10 @@ namespace ProjectCoilKai.Controllers
         {
             return View();
         }
+
+		public ActionResult GetContentsJson()
+		{
+			return new JsonResult();
+		}
     }
 }

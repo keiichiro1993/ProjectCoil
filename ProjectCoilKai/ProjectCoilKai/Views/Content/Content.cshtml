@@ -38,6 +38,9 @@
         var context = canvas.getContext("2d");
         var video = document.getElementById("video");
 
+
+        
+
         if (!navigator.getUserMedia) {
             alert("Oops...お使いのブラウザはカメラの起動に対応していないようです。")
         }
@@ -81,16 +84,13 @@
         }
 
 
+
+       
+
+
         var main = function () {
-
+            var clock = new THREE.Clock();
             var scene = new THREE.Scene();
-            var geometry = new THREE.BoxGeometry(200, 200, 200);
-
-            var material = new THREE.MeshLambertMaterial({ color: 0xee0000 });
-            var cube = new THREE.Mesh(geometry, material);
-            cube.position.set(0, 0, 0);
-            cube.castShadow = true;
-            scene.add(cube);
 
             var light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(0, 30, 0);
@@ -121,23 +121,27 @@
             movieCamera.position.z = 5000;
 
 
+            var morphs = [];
+            var loader = new THREE.JSONLoader();
+            console.log("loading");
+            loader.load('../Assets/lattice.js', function (geometry, materials) {
+                var material = materials[0];
+                material.morphTargets = true;;
 
-
-
-            //オブジェクト
-            loader = new THREE.JSONLoader();
-            loader.load('../Assets/untitled.js', function (geometry, materials) { //第１引数はジオメトリー、第２引数はマテリアルが自動的に取得）
                 var faceMaterial = new THREE.MeshFaceMaterial(materials);
-                json = new THREE.Mesh(geometry, faceMaterial);
-                json.position.set(0, 0, 0);
-                json.scale.set(100, 100, 100);
-                scene.add(json);
+                morph = new THREE.MorphAnimMesh(geometry, faceMaterial);
+                morph.duration = 1000;  // one second duration
+
+                var s = 10
+                morph.scale.set(s, s, s);
+                morph.position.set(0, 0, 0);
+                morph.matrixAutoUpdate = false;
+                morph.updateMatrix();
+                scene.add(morph);
+                morphs.push(morph);
+                console.log("loaded!!");
             });
-
-
-
-
-
+            
 
             var renderer = new THREE.WebGLRenderer();
             renderer.autoClear = false;
@@ -150,25 +154,25 @@
             function render() {
                 requestAnimationFrame(render);
                 poseBox = detectImages();
-                if (poseBox) {
-                    var rotation = poseBox.bestRotation;
-                    cube.rotation.x = -Math.asin(-rotation[1][2]);
-                    cube.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
-                    cube.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
-                    var translation = poseBox.bestTranslation;
-                    cube.position.x = translation[0];
-                    cube.position.y = translation[1];
-                    cube.position.z = -translation[2];
-
-                    json.rotation.x = -Math.asin(-rotation[1][2]);
-                    json.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
-                    json.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
-                    json.position.x = translation[0];
-                    json.position.y = translation[1] - 500;
-                    json.position.z = -translation[2] + 100;
-                }
+                
                 if (videoTexture) {
                     videoTexture.needsUpdate = true;
+                }
+                var delta = clock.getDelta();
+                if (morphs.length) {
+                    for (var i = 0; i < morphs.length; i++) {
+                        morphs[i].updateAnimation(600 * delta);
+                        if (poseBox) {
+                            var rotation = poseBox.bestRotation;
+                            var translation = poseBox.bestTranslation;
+                            morphs[i].rotation.x = -Math.asin(-rotation[1][2]);
+                            morphs[i].rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+                            morphs[i].rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
+                            morphs[i].position.x = translation[0];
+                            morphs[i].position.y = translation[1];
+                            morphs[i].position.z = -translation[2];
+                        }
+                    }
                 }
                 renderer.clear();
                 renderer.render(movieScene, movieCamera);

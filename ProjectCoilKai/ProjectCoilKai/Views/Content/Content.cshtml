@@ -16,6 +16,7 @@
     <script type="text/javascript" src="~/Scripts/Objects/MyPose.js"></script>
     <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="~/Scripts/jquery-1.10.2.intellisense.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/AjaxJsonGetter.js"></script>
 
     <style>
         html > /**/ body #video {
@@ -134,7 +135,10 @@
 
 
             var morphs = [];
-            var loader = new THREE.JSONLoader();
+            var morph = AjaxJsonGetter(1024, "@Url.Action("GetContentsJson")");
+            scene.add(morph.morph);
+            morphs.push(morph.morph);
+            /*var loader = new THREE.JSONLoader();
             console.log("loading");
             loader.load('../Assets/lattice.js', function (geometry, materials) {
                 var material = materials[0];
@@ -150,7 +154,7 @@
                 scene.add(morph);
                 morphs.push(morph);
                 console.log("loaded!!");
-            });
+            });*/
 
 
             var renderer = new THREE.WebGLRenderer();
@@ -169,8 +173,9 @@
                     videoTexture.needsUpdate = true;
                 }
                 var delta = clock.getDelta();
-                if (morphs.length) {
+                if (morphs.length != 0) {
                     for (var i = 0; i < morphs.length; i++) {
+                        console.dir(morphs[0]);
                         morphs[i].updateAnimation(600 * delta);
                         if (poseBox[0]) {
                             var rotation = poseBox[0].pose.bestRotation;

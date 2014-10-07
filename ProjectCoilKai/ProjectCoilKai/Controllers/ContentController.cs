@@ -14,9 +14,9 @@ namespace ProjectCoilKai.Controllers
 			return View();
 		}
 
-		public FileContentResult GetContentsJson(int markerNumber)
+		public FileContentResult GetContentsJson(int markerId)
 		{
-			switch (markerNumber)
+			switch (markerId)
 			{
 				default:
 					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/lattice.js")), "text/javascript");

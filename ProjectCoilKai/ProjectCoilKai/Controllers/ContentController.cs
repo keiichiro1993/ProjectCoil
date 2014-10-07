@@ -6,17 +6,23 @@ using System.Web.Mvc;
 
 namespace ProjectCoilKai.Controllers
 {
-    public class ContentController : Controller
-    {
-        // GET: Content
-        public ActionResult Content()
-        {
-            return View();
-        }
-
-		public ActionResult GetContentsJson()
+	public class ContentController : Controller
+	{
+		// GET: Content
+		public ActionResult Content()
 		{
-			return new JsonResult();
+			return View();
 		}
-    }
+
+		public FileContentResult GetContentsJson(int markerNumber)
+		{
+			switch (markerNumber)
+			{
+				default:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/lattice.js")), "text/javascript");
+				case 1024:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/lattice.js")), "text/javascript");
+			}
+		}
+	}
 }

@@ -13,6 +13,9 @@
     <script type="text/javascript" src="~/Scripts/ARs/posit2.js"></script>
     <script type="text/javascript" src="~/Scripts/ARs/svd.js"></script>
     <script type="text/javascript" src="~/Scripts/ARs/OrbitControls.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/MyPose.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.intellisense.js"></script>
 
     <style>
         html > /**/ body #video {
@@ -23,6 +26,7 @@
             display: none;
         }
     </style>
+    <meta name="description" content="An AR-System named Project Coil." />
 </head>
 <body>
     <div id="stage">
@@ -39,7 +43,7 @@
         var video = document.getElementById("video");
 
 
-        
+
 
         if (!navigator.getUserMedia) {
             alert("Oops...お使いのブラウザはカメラの起動に対応していないようです。")
@@ -60,6 +64,8 @@
             }
         }
 
+        
+
 
         var corners;
         var pose;
@@ -71,21 +77,27 @@
             context.drawImage(video, 0, 0);
             imageData = context.getImageData(0, 0, 640, 480);
             markers = detector.detect(imageData);
-            if (markers[0]) {
-                corners = markers[0].corners;
-                for (var i = 0; i < corners.length; ++i) {
-                    var corner = corners[i];
-                    corner.x = corner.x - (width / 2);
-                    corner.y = (height / 2) - corner.y;
-                }
-                pose = posit.pose(corners);
-                return pose;
+            var poses = [];
+            if (markers != null) {
+                markers.forEach(function (value) {
+                    corners = value.corners;
+                    for (var i = 0; i < corners.length; ++i) {
+                        var corner = corners[i];
+                        corner.x = corner.x - (width / 2);
+                        corner.y = (height / 2) - corner.y;
+                    }
+                    var mypose = new MyPose();
+                    mypose.pose = posit.pose(corners);
+                    mypose.markerId = 1024;//value.id;
+                    poses.push(mypose);
+                });
             }
+            return poses;
         }
 
 
 
-       
+
 
 
         var main = function () {
@@ -132,16 +144,14 @@
                 morph = new THREE.MorphAnimMesh(geometry, faceMaterial);
                 morph.duration = 1000;  // one second duration
 
-                var s = 10
+                var s = 100
                 morph.scale.set(s, s, s);
-                morph.position.set(0, 0, 0);
-                morph.matrixAutoUpdate = false;
-                morph.updateMatrix();
+                morph.position.set(0, 0, -200);
                 scene.add(morph);
                 morphs.push(morph);
                 console.log("loaded!!");
             });
-            
+
 
             var renderer = new THREE.WebGLRenderer();
             renderer.autoClear = false;
@@ -154,7 +164,7 @@
             function render() {
                 requestAnimationFrame(render);
                 poseBox = detectImages();
-                
+
                 if (videoTexture) {
                     videoTexture.needsUpdate = true;
                 }
@@ -162,15 +172,18 @@
                 if (morphs.length) {
                     for (var i = 0; i < morphs.length; i++) {
                         morphs[i].updateAnimation(600 * delta);
-                        if (poseBox) {
-                            var rotation = poseBox.bestRotation;
-                            var translation = poseBox.bestTranslation;
+                        if (poseBox[0]) {
+                            var rotation = poseBox[0].pose.bestRotation;
+                            var translation = poseBox[0].pose.bestTranslation;
                             morphs[i].rotation.x = -Math.asin(-rotation[1][2]);
                             morphs[i].rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
                             morphs[i].rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
                             morphs[i].position.x = translation[0];
                             morphs[i].position.y = translation[1];
                             morphs[i].position.z = -translation[2];
+                            morphs[i].visible = true;
+                        } else {
+                            morphs[i].visible = false;
                         }
                     }
                 }

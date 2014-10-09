@@ -6,4 +6,6 @@
 function MyMorph() {
     var morph;
     var markerId;
+    var checkedFlg;
+    var animationFlg;
 }

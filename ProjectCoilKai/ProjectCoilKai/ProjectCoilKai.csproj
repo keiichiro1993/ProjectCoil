@@ -80,10 +80,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\colorful.js" />
     <Content Include="Assets\lattice.js" />
+    <Content Include="Assets\plate.js" />
+    <Content Include="Assets\rotate.js" />
     <Content Include="Assets\shape_key.js" />
-    <Content Include="Assets\untitled.js" />
-    <Content Include="Assets\water.js" />
+    <Content Include="Assets\snake.js" />
+    <Content Include="Scripts\Objects\wallcubes.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />

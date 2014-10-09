@@ -20,8 +20,18 @@ namespace ProjectCoilKai.Controllers
 			{
 				default:
 					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/lattice.js")), "text/javascript");
-				case 1024:
+				case 1:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/shape_key.js")), "text/javascript");
+				case 2:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/colorful.js")), "text/javascript");
+				case 3:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/plate.js")), "text/javascript");
+				case 4:
 					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/lattice.js")), "text/javascript");
+				case 5:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/snake.js")), "text/javascript");
+				case 6:
+					return File(System.IO.File.ReadAllBytes(Server.MapPath("~/Assets/rotate.js")), "text/javascript");
 			}
 		}
 	}

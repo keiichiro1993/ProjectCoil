@@ -65,11 +65,10 @@
             }
         }
 
-        
+
 
 
         var corners;
-        var pose;
         var detector = new AR.Detector();
         var imageData;
         var markers;
@@ -89,7 +88,7 @@
                     }
                     var mypose = new MyPose();
                     mypose.pose = posit.pose(corners);
-                    mypose.markerId = 1024;//value.id;
+                    mypose.markerId = value.id;
                     poses.push(mypose);
                 });
             }
@@ -115,10 +114,6 @@
             var camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
             camera.position.set(0, 0, 0);
 
-            var axis = new THREE.AxisHelper(1000);
-            axis.position.set(0, 0, 0);
-            scene.add(axis);
-
 
             //カメラからの映像関連
             var videoTexture = new THREE.Texture(canvas);
@@ -135,27 +130,6 @@
 
 
             var morphs = [];
-            var morph = AjaxJsonGetter(1024, "@Url.Action("GetContentsJson")");
-            scene.add(morph.morph);
-            morphs.push(morph.morph);
-            /*var loader = new THREE.JSONLoader();
-            console.log("loading");
-            loader.load('../Assets/lattice.js', function (geometry, materials) {
-                var material = materials[0];
-                material.morphTargets = true;;
-
-                var faceMaterial = new THREE.MeshFaceMaterial(materials);
-                morph = new THREE.MorphAnimMesh(geometry, faceMaterial);
-                morph.duration = 1000;  // one second duration
-
-                var s = 100
-                morph.scale.set(s, s, s);
-                morph.position.set(0, 0, -200);
-                scene.add(morph);
-                morphs.push(morph);
-                console.log("loaded!!");
-            });*/
-
 
             var renderer = new THREE.WebGLRenderer();
             renderer.autoClear = false;
@@ -173,25 +147,64 @@
                     videoTexture.needsUpdate = true;
                 }
                 var delta = clock.getDelta();
-                if (morphs.length != 0) {
-                    for (var i = 0; i < morphs.length; i++) {
-                        console.dir(morphs[0]);
-                        morphs[i].updateAnimation(600 * delta);
-                        if (poseBox[0]) {
-                            var rotation = poseBox[0].pose.bestRotation;
-                            var translation = poseBox[0].pose.bestTranslation;
-                            morphs[i].rotation.x = -Math.asin(-rotation[1][2]);
-                            morphs[i].rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
-                            morphs[i].rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
-                            morphs[i].position.x = translation[0];
-                            morphs[i].position.y = translation[1];
-                            morphs[i].position.z = -translation[2];
-                            morphs[i].visible = true;
-                        } else {
-                            morphs[i].visible = false;
+                if (poseBox.length != 0) {
+                    for (var p = 0; p < poseBox.length; p++) {
+                        if (morphs.length != 0) {
+                            var found = false;//morphsの中に存在したらtrueにする。
+                            for (var i = 0; i < morphs.length; i++) {
+                                //checkedFlgがセットされていないもののみを対象に（一度trueにしたvisibleがfalseになってしまうのを防ぐ）
+                                if (!morphs[i].checkedFlg) {
+                                    if (morphs[i].markerId === poseBox[p].markerId) {
+                                        var rotation = poseBox[p].pose.bestRotation;
+                                        var translation = poseBox[p].pose.bestTranslation;
+                                        var object = morphs[i].morph;
+                                        object.rotation.x = -Math.asin(-rotation[1][2]);
+                                        object.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+                                        object.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
+                                        object.position.x = translation[0];
+                                        object.position.y = translation[1];
+                                        object.position.z = -translation[2];
+                                        object.visible = true;
+                                        morphs[i].checkedFlg = true;//chekcedFlgをセット
+                                        found = true;
+                                    } else {
+                                        morphs[i].morph.visible = false;
+                                    }
+                                }
+                            }
+                            if (!found) {
+                                var mymorph = AjaxJsonGetter(poseBox[p].markerId, "@Url.Action("GetContentsJson")");
+                                scene.add(mymorph.morph);
+                                morphs.push(mymorph);
+                            }
                         }
+                        else {
+                            //morphsの中に何も入っていないとき、取得する。
+                            var mymorph = AjaxJsonGetter(poseBox[p].markerId, "@Url.Action("GetContentsJson")");
+                            scene.add(mymorph.morph);
+                            morphs.push(mymorph);
+                        }
+
                     }
                 }
+                else {
+                    if (morphs.length != 0) {
+                        morphs.forEach(function (m) {
+                            m.morph.visible = false;
+                        });
+                    }
+                }
+
+                //すべての更新作業が終わったら、一度morphsの中のcheckedFlgをすべてリセット
+                if (morphs.length != 0) {
+                    morphs.forEach(function (m) {
+                        if (m.animationFlg) {
+                            m.morph.updateAnimation(600 * delta);
+                        }
+                        m.checkedFlg = false;
+                    });
+                }
+
                 renderer.clear();
                 renderer.render(movieScene, movieCamera);
                 renderer.render(scene, camera);

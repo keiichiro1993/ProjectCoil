@@ -7,13 +7,16 @@
         data: { markerId: markerId },
         dataType: "json",
         cache: false,
+        async: false,
         success: function (data) {
             var loader = new THREE.JSONLoader();
             var result = loader.parse(data, null);
             mymorph.morph = JsonGetterCallback(result.geometry, result.materials);
             mymorph.markerId = markerId;
-            console.dir(mymorph);
+            mymorph.checkedFlg = false;
+            mymorph.animationFlg = true;
             console.log("loaded!!");
+
         },
         error: function (xhr, textStatus, errorThrown) {
             // エラー処理
@@ -34,7 +37,7 @@ function JsonGetterCallback(geometry, materials) {
     var s = 100
     morph.scale.set(s, s, s);
     morph.position.set(0, 0, -200);
-    /*scene.add(morph);
-    morphs.push(morph);*/
+    //scene.add(morph);
+    //morphs.push(morph);
     return morph;
 }

@@ -80,12 +80,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\appear.js" />
+    <Content Include="Assets\ban.js" />
+    <Content Include="Assets\block.js" />
+    <Content Include="Assets\build.js" />
+    <Content Include="Assets\circle.js" />
     <Content Include="Assets\colorful.js" />
+    <Content Include="Assets\gear.js" />
+    <Content Include="Assets\Images\loading.png" />
+    <Content Include="Assets\Images\shot01.png" />
+    <Content Include="Assets\Images\shot02.png" />
+    <Content Include="Assets\Images\shot03.png" />
+    <Content Include="Assets\Images\shot04.png" />
     <Content Include="Assets\lattice.js" />
+    <Content Include="Assets\Images\logo.png" />
+    <Content Include="Assets\lattice_1.js" />
+    <Content Include="Assets\lattice_2.js" />
+    <Content Include="Assets\mist.js" />
+    <Content Include="Assets\particle.js" />
     <Content Include="Assets\plate.js" />
     <Content Include="Assets\rotate.js" />
+    <Content Include="Assets\rotate_1.js" />
+    <Content Include="Assets\sacchi.js" />
     <Content Include="Assets\shape_key.js" />
     <Content Include="Assets\snake.js" />
+    <Content Include="Assets\text.js" />
+    <Content Include="Scripts\Objects\heapcoins.js" />
+    <Content Include="Scripts\Objects\heapcubes.js" />
+    <Content Include="Scripts\Objects\spiralsphere.js" />
     <Content Include="Scripts\Objects\wallcubes.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -102,7 +124,10 @@
     <Content Include="Scripts\ARs\three.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="fonts\mplus-1m-light.ttf" />
+    <EmbeddedResource Include="fonts\mplus-1m-light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Content Include="fonts\03SmartFontUI.ttf" />
     <None Include="Properties\PublishProfiles\projectcoil %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\projectcoil %283%29.pubxml" />
     <None Include="Properties\PublishProfiles\ProjectCoil.pubxml" />
@@ -120,6 +145,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <None Include="Scripts\_references.js" />
+    <None Include="Views\Home\DownloadMarker.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +170,7 @@
     <Content Include="Views\Home\MarkerGenerator.cshtml" />
     <Content Include="Views\Content\Content.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Home\HowToPlay.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

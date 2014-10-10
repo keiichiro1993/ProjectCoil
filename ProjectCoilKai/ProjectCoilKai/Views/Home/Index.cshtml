@@ -9,19 +9,43 @@
     <h2>注意！！</h2>
     <p>
         ProjectCoil&copy;は大変重い（容量的にも動作的にも）アプリケーションです。モバイルからの閲覧の場合、通信速度制限の上限を越えてしまう可能性があります。<br />
+        というより、ほとんどの場合は正しく動作しません！！
     </p>
 </div>
 
 <div>
-    <h2>はじめに</h2>
+    <h2 class="highlight-orange">はじめに</h2>
     <p>
         こんにちは！ProjectCoilのページヘようこそ。<br />
         ProjectCoilは、マーカーを用いたARアプリケーションです。利用には何枚かのARマーカーが必要です。ダウンロードは
         @Html.ActionLink("こちら", "MarkerGenerator", "Home")
+        (もしくは
+        @Html.ActionLink("こちら", "DownloadMarker", "Home")
+        )
         から。<br />
+        詳しい説明は、@Html.ActionLink("遊び方ページ", "HowToPlay", "Home")へ！<br />
         みなさんの普段生活している空間を素敵なものに。しかもブラウザ上で。<br />
         僕たちはそういうことにハピネスを感じるんだ。
     </p>
-
     @Html.ActionLink("はじめる", "Content", "Content", new { area = "" }, new { @class = "btn btn-default" })
+    <h3 class="highlight-orange">動作確認済み環境</h3>
+    <h4>Windows</h4>
+    <ul>
+        <li>Firefox</li>
+        <li>GoogleChrome</li>
+    </ul>
+    <h4>Android（Nexus7）</h4>
+    <ul>
+        <li>Firefox</li>
+        <li>GoogleChrome</li>
+    </ul>
+    <h4>Macintosh</h4>
+    <ul>
+        <li>Firefox</li>
+        <li>GoogleChrome</li>
+    </ul>
+    <div class="text-danger">
+        ※ただし、GoogleChromeはどのプラットフォームにおいても、使用するカメラを選択できないようです。<br />
+        カメラが2つ以上搭載されている端末ではFireFoxが推奨されます。
+    </div>
 </div>

@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Marker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="msg">お好みの画像を保存して印刷して下さい。<a href="javascript:window.print()">全体を印刷する</a></div>
+<script>
+    var ids = [[1, 0, 0, 0, 0], [1, 0, 1, 1, 1], [0, 1, 0, 0, 1], [0, 1, 1, 1, 0]]
+
+    function makeMarker(num) {
+        var a = [], b = [];
+        a[0] = Math.floor(num / 4); b[0] = num % 4;
+        a[1] = Math.floor(a[0] / 4); b[1] = a[0] % 4;
+        a[2] = Math.floor(a[1] / 4); b[2] = a[1] % 4;
+        a[3] = Math.floor(a[2] / 4); b[3] = a[2] % 4;
+        a[4] = Math.floor(a[3] / 4); b[4] = a[3] % 4;
+        ctx.fillStyle = '#000';
+        ctx.font = "12pt Arial";
+        ctx.fillText("No. " + num, 50, 40);
+        ctx.fillRect(50, 50, 350, 350);
+        ctx.fillStyle = '#fff';
+        for (var j = 0; j < 5; j++) {
+            var s = b[j];
+            for (var i = 0; i < 5; i++) {
+                if (ids[s][i]) {
+                    ctx.fillRect(100 + i * 50, 300 - j * 50, 50, 50);
+                }
+            }
+        }
+    }
+
+    for (var i = 1; i <= 12; i++) {
+        var canvas = document.createElement('canvas');
+        canvas.id = "c" + i;
+        canvas.width = "450";
+        canvas.height = "450";
+
+        var ctx = canvas.getContext("2d");
+
+        makeMarker(i);
+
+        var img = document.createElement('img');
+        img.src = canvas.toDataURL();
+
+        document.body.appendChild(img);
+    };
+
+</script>

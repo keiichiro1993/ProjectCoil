@@ -8,4 +8,5 @@ function MyMorph() {
     var markerId;
     var checkedFlg;
     var animationFlg;
+    var generator;
 }

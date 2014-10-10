@@ -1,18 +1,35 @@
 ﻿@font-face {
-    font-family: 'mplus';
-    src: url("~/fonts/mplus-1m-light.ttf");
+    font-family: mplus;
+    src: url("../fonts/mplus-1m-light.ttf");
+}
+
+@font-face {
+    font-family: smartfont;
+    src: url("../fonts/03SmartFontUI.ttf");
+}
+
+
+img {
+    page-break-after: always;
+}
+
+@media print {
+    div.msg {
+        display: none;
+    }
 }
 
 body {
     padding-top: 50px;
     padding-bottom: 20px;
-    font-family: 'mplus';
+    font-family: smartfont;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    padding-top: 20px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -29,6 +46,15 @@ textarea {
     max-width: 280px;
 }
 
+.navbar-inverse {
+    background-color: #12beff;
+    color: white;
+    border-bottom: 2px solid #00a9ff;
+}
+
+    .navbar-inverse .container ul li a, .navbar-inverse .navbar-header button, .navbar-inverse .navbar-header .navbar-brand {
+        color: white;
+    }
 
 /*Index*/
 .alert-danger {
@@ -39,3 +65,43 @@ textarea {
         font-size: 20px;
         margin: 5px;
     }
+
+#stage {
+    text-align: center;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-content {
+    border-radius: 2px;
+    background-color: #d3f4ff;
+}
+
+hr {
+    border-top: 1px solid #b4ffb6;
+}
+
+.highlight-orange {
+    background-color: #ffcd56;
+    color: white;
+    padding: 3px 0 7px 10px;
+}
+
+.btn-default {
+    font-size: 30px;
+    padding: 3px 5px 7px 5px;
+}
+
+canvas {
+    border-radius: 2px;
+    border: 1px solid #12beff;
+    box-shadow: #78b7cf 0 0 5px 2px;
+}
+
+.screen-shot {
+    width: 300px;
+    border: 1px solid #12beff;
+    box-shadow: #78b7cf 0 0 5px 2px;
+}

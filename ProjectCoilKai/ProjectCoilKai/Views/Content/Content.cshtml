@@ -1,51 +1,26 @@
-﻿<!DOCTYPE html>
+﻿@{
+    ViewBag.Title = "AR Content";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script type="text/javascript" src="~/Scripts/ARs/cv.js"></script>
-    <script type="text/javascript" src="~/Scripts/ARs/aruco.js"></script>
-    <script type="text/javascript" src="~/Scripts/ARs/three.js"></script>
-    <script type="text/javascript" src="~/Scripts/ARs/posit2.js"></script>
-    <script type="text/javascript" src="~/Scripts/ARs/svd.js"></script>
-    <script type="text/javascript" src="~/Scripts/ARs/OrbitControls.js"></script>
-    <script type="text/javascript" src="~/Scripts/Objects/MyPose.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.intellisense.js"></script>
-    <script type="text/javascript" src="~/Scripts/Objects/AjaxJsonGetter.js"></script>
-
-    <style>
-        html > /**/ body #video {
-            display: none;
-        }
-
-        html > /**/ body #canvas {
-            display: none;
-        }
-    </style>
-    <meta name="description" content="An AR-System named Project Coil." />
-</head>
-<body>
-    <div id="stage">
-        <canvas id="canvas" width="640" height="480"></canvas>
-        <video id="video"></video>
-    </div>
-    <script>
-        navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-        var width = 640;
-        var height = 480;
-        var posit = new POS.Posit(300, width - 50);
-        var canvas = document.getElementById("canvas");
-        var context = canvas.getContext("2d");
-        var video = document.getElementById("video");
+<div id="stage">
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <video id="video"></video>
+</div>
+<script>
+    navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    var width = 640;
+    var height = 480;
+    var posit = new POS.Posit(300, width - 50);
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var video = document.getElementById("video");
 
 
 
-
+    $(function () {
         if (!navigator.getUserMedia) {
             alert("Oops...お使いのブラウザはカメラの起動に対応していないようです。")
         }
@@ -61,92 +36,148 @@
                 }
                 );
             video.oncanplay = function () {
-                main();
+                $('#openingModal').modal('show');
+                setTimeout(main(), 500);
             }
         }
+    });
 
 
 
 
-        var corners;
-        var detector = new AR.Detector();
-        var imageData;
-        var markers;
+    var corners;
+    var detector = new AR.Detector();
+    var imageData;
+    var markers;
 
-        function detectImages() {
-            context.drawImage(video, 0, 0);
-            imageData = context.getImageData(0, 0, 640, 480);
-            markers = detector.detect(imageData);
-            var poses = [];
-            if (markers != null) {
-                markers.forEach(function (value) {
-                    corners = value.corners;
-                    for (var i = 0; i < corners.length; ++i) {
-                        var corner = corners[i];
-                        corner.x = corner.x - (width / 2);
-                        corner.y = (height / 2) - corner.y;
-                    }
-                    var mypose = new MyPose();
-                    mypose.pose = posit.pose(corners);
-                    mypose.markerId = value.id;
-                    poses.push(mypose);
-                });
-            }
-            return poses;
-        }
-
-
-
-
-
-
-        var main = function () {
-            var clock = new THREE.Clock();
-            var scene = new THREE.Scene();
-
-            var light = new THREE.DirectionalLight(0xffffff, 1);
-            light.position.set(0, 30, 0);
-            light.castShadow = true;
-            scene.add(light);
-            var ambient = new THREE.AmbientLight(0x550000);
-            scene.add(ambient);
-
-            var camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-            camera.position.set(0, 0, 0);
-
-
-            //カメラからの映像関連
-            var videoTexture = new THREE.Texture(canvas);
-            videoTexture.minFilter = THREE.LinearFilter;
-            videoTexture.magFilter = THREE.LinearFilter;
-            var movieMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, overdraw: true, side: THREE.FrontSide });
-            var movieGeometry = new THREE.PlaneGeometry(width, height, 1, 1);
-            var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-            movieScreen.position.set(0, 0, -5000);
-            var movieScene = new THREE.Scene();
-            movieScene.add(movieScreen);
-            var movieCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 10000);
-            movieCamera.position.z = 5000;
-
-
-            var morphs = [];
-
-            var renderer = new THREE.WebGLRenderer();
-            renderer.autoClear = false;
-            renderer.setSize(width, height);
-            renderer.setClearColor(0xeeeeee, 1);
-            renderer.shadowMapEnabled = true;
-            document.getElementById('stage').appendChild(renderer.domElement);
-            var controls = new THREE.OrbitControls(camera, renderer.domElement);
-            var poseBox;
-            function render() {
-                requestAnimationFrame(render);
-                poseBox = detectImages();
-
-                if (videoTexture) {
-                    videoTexture.needsUpdate = true;
+    function detectImages() {
+        context.drawImage(video, 0, 0);
+        imageData = context.getImageData(0, 0, 640, 480);
+        markers = detector.detect(imageData);
+        var poses = [];
+        if (markers != null) {
+            markers.forEach(function (value) {
+                corners = value.corners;
+                for (var i = 0; i < corners.length; ++i) {
+                    var corner = corners[i];
+                    corner.x = corner.x - (width / 2);
+                    corner.y = (height / 2) - corner.y;
                 }
-                var delta = clock.getDelta();
+                var mypose = new MyPose();
+                mypose.pose = posit.pose(corners);
+                mypose.markerId = value.id;
+                poses.push(mypose);
+            });
+        }
+        return poses;
+    }
+
+
+
+
+
+
+    var main = function () {
+        var clock = new THREE.Clock();
+        var scene = new THREE.Scene();
+
+        var light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(0, 30, 0);
+        light.castShadow = true;
+        scene.add(light);
+        var ambient = new THREE.AmbientLight(0xffffff);
+        scene.add(ambient);
+
+        var camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.set(0, 0, 0);
+
+
+        //カメラからの映像関連
+        var videoTexture = new THREE.Texture(canvas);
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
+        var movieMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, overdraw: true, side: THREE.FrontSide });
+        var movieGeometry = new THREE.PlaneGeometry(width, height, 1, 1);
+        var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+        movieScreen.position.set(0, 0, -5000);
+        var movieScene = new THREE.Scene();
+        movieScene.add(movieScreen);
+        var movieCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 10000);
+        movieCamera.position.z = 5000;
+
+        var morphs = [];//モデル（メッシュの集合とする）
+
+
+        /*しびさんが作ったメッシュを生成して追加*/
+        var wallCubes = new WallCubes();
+        var wallCubesMesh = wallCubes.createMesh();
+        scene.add(wallCubesMesh);
+        var wallCubesMyMorph = new MyMorph();
+        wallCubesMyMorph.morph = wallCubesMesh;
+        wallCubesMyMorph.markerId = 7;
+        wallCubesMyMorph.checkedFlg = false;
+        wallCubesMyMorph.animationFlg = false;
+        wallCubesMyMorph.generator = wallCubes;
+        morphs.push(wallCubesMyMorph);
+        wallCubes.changeVisible(false);
+
+        var heapCoins = new HeapCoins();
+        var heapCoinsMesh = heapCoins.createMesh();
+        scene.add(heapCoinsMesh);
+        var heapCoinsMyMorph = new MyMorph();
+        heapCoinsMyMorph.morph = heapCoinsMesh;
+        heapCoinsMyMorph.markerId = 8;
+        heapCoinsMyMorph.checkedFlg = false;
+        heapCoinsMyMorph.animationFlg = false;
+        heapCoinsMyMorph.generator = heapCoins;
+        morphs.push(heapCoinsMyMorph);
+        heapCoins.changeVisible(false);
+
+        var heapCubes = new HeapCubes();
+        var heapCubesMesh = heapCubes.createMesh();
+        scene.add(heapCubesMesh);
+        var heapCubesMyMorph = new MyMorph();
+        heapCubesMyMorph.morph = heapCubesMesh;
+        heapCubesMyMorph.markerId = 9;
+        heapCubesMyMorph.checkedFlg = false;
+        heapCubesMyMorph.animationFlg = false;
+        heapCubesMyMorph.generator = heapCubes;
+        morphs.push(heapCubesMyMorph);
+        heapCubes.changeVisible(false);
+
+        var spiralSpheres = new SpiralSpheres();
+        var spiralSpheresMesh = spiralSpheres.createMesh();
+        scene.add(spiralSpheresMesh);
+        var spiralSpheresMyMorph = new MyMorph();
+        spiralSpheresMyMorph.morph = spiralSpheresMesh;
+        spiralSpheresMyMorph.markerId = 10;
+        spiralSpheresMyMorph.checkedFlg = false;
+        spiralSpheresMyMorph.animationFlg = false;
+        spiralSpheresMyMorph.generator = spiralSpheres;
+        morphs.push(spiralSpheresMyMorph);
+        spiralSpheres.changeVisible(false);
+        /*ここまでしびさん作メッシュ*/
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.autoClear = false;
+        renderer.setSize(width, height);
+        renderer.setClearColor(0xeeeeee, 1);
+        renderer.shadowMapEnabled = true;
+        document.getElementById('stage').appendChild(renderer.domElement);
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        var poseBox;
+
+        var loadingFlg = false;
+
+        function render() {
+            requestAnimationFrame(render);
+            poseBox = detectImages();
+
+            if (videoTexture) {
+                videoTexture.needsUpdate = true;
+            }
+            var delta = clock.getDelta();
+            if (loadingFlg !== true) {
                 if (poseBox.length != 0) {
                     for (var p = 0; p < poseBox.length; p++) {
                         if (morphs.length != 0) {
@@ -164,25 +195,75 @@
                                         object.position.x = translation[0];
                                         object.position.y = translation[1];
                                         object.position.z = -translation[2];
-                                        object.visible = true;
+                                        if (morphs[i].animationFlg === true) {
+                                            object.visible = true;
+                                        }
+                                        else {
+                                            morphs[i].generator.changeVisible(true);
+                                        }
                                         morphs[i].checkedFlg = true;//chekcedFlgをセット
                                         found = true;
                                     } else {
-                                        morphs[i].morph.visible = false;
+                                        if (morphs[i].animationFlg === true) {
+                                            morphs[i].morph.visible = false;
+                                        }
+                                        else {
+                                            morphs[i].generator.changeVisible(false);
+                                        }
                                     }
                                 }
                             }
                             if (!found) {
-                                var mymorph = AjaxJsonGetter(poseBox[p].markerId, "@Url.Action("GetContentsJson")");
-                                scene.add(mymorph.morph);
-                                morphs.push(mymorph);
+                                loadingFlg = true;
+                                $('#loadingModal').modal('show');
+                                var mymorph;
+                                setTimeout(function (markerId) {
+                                    mymorph = AjaxJsonGetter(markerId, "@Url.Action("GetContentsJson")");
+                                    if (mymorph !== null) {
+                                        var exist = false;
+                                        for (var q = 0; q < morphs.length; q++) {
+                                            if (morphs[q].markerId == mymorph.markerId) {
+                                                exist = true;
+                                            }
+                                        }
+                                        if (!exist) {
+                                            scene.add(mymorph.morph);
+                                            mymorph.animationFlg = true;
+                                            morphs.push(mymorph);
+                                        }
+                                    }
+                                    setTimeout(function () {
+                                        $('#loadingModal').modal('hide');
+                                        loadingFlg = false;
+                                    }, 5000);
+                                }, 200, poseBox[p].markerId);
                             }
                         }
                         else {
                             //morphsの中に何も入っていないとき、取得する。
-                            var mymorph = AjaxJsonGetter(poseBox[p].markerId, "@Url.Action("GetContentsJson")");
-                            scene.add(mymorph.morph);
-                            morphs.push(mymorph);
+                            loadingFlg = true;
+                            $('#loadingModal').modal('show');
+                            var mymorph;
+                            setTimeout(function (markerId) {
+                                mymorph = AjaxJsonGetter(markerId, "@Url.Action("GetContentsJson")");
+                                if (mymorph !== null) {
+                                    var exist = false;
+                                    for (var q = 0; q < morphs.length; q++) {
+                                        if (morphs[q].markerId == mymorph.markerId) {
+                                            exist = true;
+                                        }
+                                    }
+                                    if (!exist) {
+                                        scene.add(mymorph.morph);
+                                        mymorph.animationFlg = true;
+                                        morphs.push(mymorph);
+                                    }
+                                }
+                                setTimeout(function () {
+                                    $('#loadingModal').modal('hide');
+                                    loadingFlg = false;
+                                }, 5000);
+                            }, 200, poseBox[p].markerId);
                         }
 
                     }
@@ -190,7 +271,12 @@
                 else {
                     if (morphs.length != 0) {
                         morphs.forEach(function (m) {
-                            m.morph.visible = false;
+                            if (m.animationFlg === true) {
+                                m.morph.visible = false;
+                            }
+                            else {
+                                m.generator.changeVisible(false);
+                            }
                         });
                     }
                 }
@@ -198,20 +284,54 @@
                 //すべての更新作業が終わったら、一度morphsの中のcheckedFlgをすべてリセット
                 if (morphs.length != 0) {
                     morphs.forEach(function (m) {
-                        if (m.animationFlg) {
+                        if (m.animationFlg === true) {
                             m.morph.updateAnimation(600 * delta);
                         }
                         m.checkedFlg = false;
                     });
                 }
-
-                renderer.clear();
-                renderer.render(movieScene, movieCamera);
-                renderer.render(scene, camera);
             }
-
-            render();
+            renderer.clear();
+            renderer.render(movieScene, movieCamera);
+            renderer.render(scene, camera);
         }
-    </script>
-</body>
-</html>
+
+        render();
+    }
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <img src="~/Assets/Images/loading.png" alt="Now Loading..." />
+                <div style="font-size: 40px;">ろーどちゅう</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="openingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <img src="~/Assets/Images/logo.png" alt="Now Loading..." />
+                <div style="font-size: 40px;">プロジェクトコイルの世界へようこそ！</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

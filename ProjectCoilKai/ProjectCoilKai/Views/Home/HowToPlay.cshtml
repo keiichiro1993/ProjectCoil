@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "How to play";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="highlight-orange">How to play</h2>
+<h3>Step.01 まずはマーカーを印刷！</h3>
+@Html.ActionLink("マーカージェネレーター", "MarkerGenerator", "Home")
+<h3>Step.02 はじめる！</h3>
+<img class="screen-shot" src="~/Assets/Images/shot04.png" alt="" /><br/>
+トップページの「はじめる」ボタンからスタート！<br/>
+<img class="screen-shot" src="~/Assets/Images/shot02.png" alt="" /><br/>
+<h3>Step.03 マーカーをカメラで撮影！</h3>
+<img class="screen-shot" src="~/Assets/Images/shot01.png" alt="" /><br/>
+画面の真ん中にカメラの映像が表示されたら、あとはマーカーをカメラのフレームに収めるだけ！<br/>
+マーカーを見つけると、コンテンツを自動的にロードして、終わり次第表示します。
+

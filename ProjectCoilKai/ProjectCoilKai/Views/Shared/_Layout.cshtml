@@ -8,6 +8,28 @@
     <link rel="stylesheet" href="~/Content/bootstrap.min.css">
     <link rel="stylesheet" href="~/Content/Site.css">
 
+    <script type="text/javascript" src="~/Scripts/ARs/cv.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/aruco.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/three.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/posit2.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/svd.js"></script>
+    <script type="text/javascript" src="~/Scripts/ARs/OrbitControls.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/MyPose.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/AjaxJsonGetter.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/wallcubes.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/heapcoins.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/spiralsphere.js"></script>
+    <script type="text/javascript" src="~/Scripts/Objects/heapcubes.js"></script>
+    <style>
+        html > /**/ body #video {
+            display: none;
+        }
+
+        html > /**/ body #canvas {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -23,8 +45,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("ホーム", "Index", "Home")</li>
-                    <!--<li>@Html.ActionLink("詳細", "About", "Home")</li>
-                    <li>@Html.ActionLink("連絡先", "Contact", "Home")</li>-->
+                    <li>@Html.ActionLink("遊び方", "HowToPlay", "Home")</li>
+                    <!--<li>@Html.ActionLink("連絡先", "Contact", "Home")</li>-->
                 </ul>
             </div>
         </div>
